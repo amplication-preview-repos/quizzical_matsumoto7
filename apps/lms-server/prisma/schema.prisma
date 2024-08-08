@@ -1,0 +1,76 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Subject {
+  createdAt   DateTime                @default(now())
+  id          String                  @id @default(cuid())
+  name        String?
+  subjectType EnumSubjectSubjectType?
+  typeField   EnumSubjectTypeField?
+  updatedAt   DateTime                @updatedAt
+}
+
+model Student {
+  age       Int?
+  createdAt DateTime @default(now())
+  gender    Gender?  @relation(fields: [genderId], references: [id])
+  genderId  String?
+  grade     Grade?   @relation(fields: [gradeId], references: [id])
+  gradeId   String?
+  id        String   @id @default(cuid())
+  name      String?
+  section   Section? @relation(fields: [sectionId], references: [id])
+  sectionId String?
+  subjects  Json?
+  updatedAt DateTime @updatedAt
+}
+
+model Grade {
+  createdAt DateTime  @default(now())
+  id        String    @id @default(cuid())
+  level     Int?
+  sections  Section[]
+  students  Student[]
+  subjects  Json?
+  updatedAt DateTime  @updatedAt
+}
+
+model Section {
+  createdAt DateTime  @default(now())
+  grade     Grade?    @relation(fields: [gradeId], references: [id])
+  gradeId   String?
+  id        String    @id @default(cuid())
+  name      String?
+  students  Student[]
+  updatedAt DateTime  @updatedAt
+}
+
+model Gender {
+  createdAt DateTime  @default(now())
+  id        String    @id @default(cuid())
+  students  Student[]
+  typeField String?
+  updatedAt DateTime  @updatedAt
+}
+
+model AcademicYear {
+  createdAt DateTime  @default(now())
+  endDate   DateTime?
+  id        String    @id @default(cuid())
+  startDate DateTime?
+  updatedAt DateTime  @updatedAt
+}
+
+enum EnumSubjectSubjectType {
+  Option1
+}
+
+enum EnumSubjectTypeField {
+  Option1
+}
